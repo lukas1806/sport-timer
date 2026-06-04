@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f6b55">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Tabata Timer">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Tabata Timer</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #111317;
+      --panel: #1b1f27;
+      --panel-soft: #242936;
+      --text: #f7f8fb;
+      --muted: #a7afc0;
+      --border: rgba(255, 255, 255, 0.12);
+      --sport: #20c997;
+      --sport-deep: #0f6b55;
+      --pause: #4dabf7;
+      --pause-deep: #154c78;
+      --danger: #ff6b6b;
+      --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      min-height: 100svh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
+      -webkit-tap-highlight-color: transparent;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    .app {
+      width: min(100%, 520px);
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .timer-display {
+      padding: 28px 22px 26px;
+      text-align: center;
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0)),
+        linear-gradient(135deg, var(--sport-deep), #17201d 62%);
+      transition: background 220ms ease;
+    }
+
+    .app.pause .timer-display {
+      background:
+        linear-gradient(160deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0)),
+        linear-gradient(135deg, var(--pause-deep), #151b24 62%);
+    }
+
+    h1 {
+      margin: 0 0 18px;
+      font-size: 1.35rem;
+      font-weight: 760;
+    }
+
+    .mode {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 112px;
+      min-height: 38px;
+      margin-bottom: 10px;
+      padding: 8px 18px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.24);
+      border: 1px solid rgba(255, 255, 255, 0.17);
+      font-size: 1rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+
+    .time {
+      margin: 0;
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(5rem, 27vw, 8.5rem);
+      line-height: 0.95;
+      font-weight: 850;
+    }
+
+    .round {
+      margin-top: 12px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .wake-status {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      margin-top: 12px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: rgba(0, 0, 0, 0.2);
+      color: rgba(255, 255, 255, 0.74);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .content {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .settings {
+      display: grid;
+      gap: 12px;
+    }
+
+    .setting {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 12px;
+      min-height: 74px;
+      padding: 14px;
+      background: var(--panel-soft);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+    }
+
+    .setting-title {
+      margin: 0 0 4px;
+      font-size: 1rem;
+      font-weight: 760;
+    }
+
+    .setting-value {
+      color: var(--muted);
+      font-size: 0.95rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .stepper {
+      display: grid;
+      grid-template-columns: 48px 48px;
+      gap: 8px;
+    }
+
+    button {
+      border: 0;
+      -webkit-appearance: none;
+      appearance: none;
+      color: var(--text);
+      font: inherit;
+      font-weight: 800;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
+    }
+
+    button:active:not(:disabled) {
+      transform: scale(0.97);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.42;
+    }
+
+    .step-button {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: #343b4b;
+      font-size: 1.55rem;
+      line-height: 1;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .control-button {
+      min-height: 58px;
+      border-radius: 16px;
+      font-size: 1.05rem;
+    }
+
+    .start {
+      grid-column: 1 / -1;
+      background: var(--sport);
+      color: #071512;
+    }
+
+    .app.pause .start {
+      background: var(--pause);
+      color: #06111a;
+    }
+
+    .stop {
+      background: #343b4b;
+    }
+
+    .reset {
+      background: rgba(255, 107, 107, 0.18);
+      color: #ffd6d6;
+      border: 1px solid rgba(255, 107, 107, 0.25);
+    }
+
+    @media (min-width: 560px) {
+      body {
+        padding: 32px;
+      }
+
+      .timer-display {
+        padding: 34px 30px 30px;
+      }
+
+      .content {
+        padding: 26px;
+      }
+
+      .settings {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .setting {
+        grid-template-columns: 1fr;
+      }
+
+      .stepper {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .step-button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app sport" id="app">
+    <section class="timer-display" aria-live="polite">
+      <h1>Tabata Timer</h1>
+      <div class="mode" id="modeLabel">Sport</div>
+      <p class="time" id="timeDisplay">40</p>
+      <div class="round">Runde <span id="roundDisplay">0</span></div>
+      <div class="wake-status" id="wakeStatus">Bildschirm-Wachhalten: wird geprüft</div>
+    </section>
+
+    <section class="content">
+      <div class="settings">
+        <div class="setting">
+          <div>
+            <p class="setting-title">Sportzeit</p>
+            <div class="setting-value"><span id="workValue">40</span> Sekunden</div>
+          </div>
+          <div class="stepper" aria-label="Sportzeit einstellen">
+            <button class="step-button" id="decreaseWork" type="button" aria-label="Sportzeit verringern">−</button>
+            <button class="step-button" id="increaseWork" type="button" aria-label="Sportzeit erhöhen">+</button>
+          </div>
+        </div>
+
+        <div class="setting">
+          <div>
+            <p class="setting-title">Pausenzeit</p>
+            <div class="setting-value"><span id="restValue">20</span> Sekunden</div>
+          </div>
+          <div class="stepper" aria-label="Pausenzeit einstellen">
+            <button class="step-button" id="decreaseRest" type="button" aria-label="Pausenzeit verringern">−</button>
+            <button class="step-button" id="increaseRest" type="button" aria-label="Pausenzeit erhöhen">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <button class="control-button start" id="startButton" type="button">Start</button>
+        <button class="control-button stop" id="stopButton" type="button">Stopp</button>
+        <button class="control-button reset" id="resetButton" type="button">Reset</button>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const MIN_SECONDS = 5;
+    const STEP_SECONDS = 5;
+    const DEFAULT_WORK_SECONDS = 40;
+    const DEFAULT_REST_SECONDS = 20;
+
+    const state = {
+      workSeconds: DEFAULT_WORK_SECONDS,
+      restSeconds: DEFAULT_REST_SECONDS,
+      remainingSeconds: DEFAULT_WORK_SECONDS,
+      mode: "sport",
+      round: 0,
+      isRunning: false,
+      intervalId: null,
+      wakeLock: null,
+      wakeLockStatus: "checking"
+    };
+
+    const elements = {
+      app: document.getElementById("app"),
+      modeLabel: document.getElementById("modeLabel"),
+      timeDisplay: document.getElementById("timeDisplay"),
+      roundDisplay: document.getElementById("roundDisplay"),
+      wakeStatus: document.getElementById("wakeStatus"),
+      workValue: document.getElementById("workValue"),
+      restValue: document.getElementById("restValue"),
+      decreaseWork: document.getElementById("decreaseWork"),
+      increaseWork: document.getElementById("increaseWork"),
+      decreaseRest: document.getElementById("decreaseRest"),
+      increaseRest: document.getElementById("increaseRest"),
+      startButton: document.getElementById("startButton"),
+      stopButton: document.getElementById("stopButton"),
+      resetButton: document.getElementById("resetButton")
+    };
+
+    function render() {
+      elements.app.classList.toggle("sport", state.mode === "sport");
+      elements.app.classList.toggle("pause", state.mode === "pause");
+      elements.modeLabel.textContent = state.mode === "sport" ? "Sport" : "Pause";
+      elements.timeDisplay.textContent = state.remainingSeconds;
+      elements.roundDisplay.textContent = state.round;
+      elements.workValue.textContent = state.workSeconds;
+      elements.restValue.textContent = state.restSeconds;
+      elements.wakeStatus.textContent = getWakeLockText();
+
+      const settingsDisabled = state.isRunning;
+      elements.decreaseWork.disabled = settingsDisabled || state.workSeconds <= MIN_SECONDS;
+      elements.increaseWork.disabled = settingsDisabled;
+      elements.decreaseRest.disabled = settingsDisabled || state.restSeconds <= MIN_SECONDS;
+      elements.increaseRest.disabled = settingsDisabled;
+      elements.startButton.disabled = state.isRunning;
+      elements.stopButton.disabled = !state.isRunning;
+    }
+
+    function getWakeLockText() {
+      if (!("wakeLock" in navigator)) {
+        return "Bildschirm-Wachhalten: nicht verfügbar";
+      }
+
+      if (state.wakeLock) {
+        return "Bildschirm-Wachhalten: aktiv";
+      }
+
+      if (state.wakeLockStatus === "blocked") {
+        return "Bildschirm-Wachhalten: blockiert";
+      }
+
+      if (state.isRunning) {
+        return "Bildschirm-Wachhalten: nicht aktiv";
+      }
+
+      return "Bildschirm-Wachhalten: verfügbar";
+    }
+
+    async function requestWakeLock() {
+      if (!("wakeLock" in navigator) || state.wakeLock) {
+        if (!("wakeLock" in navigator)) {
+          state.wakeLockStatus = "unsupported";
+        }
+        return;
+      }
+
+      try {
+        state.wakeLock = await navigator.wakeLock.request("screen");
+        state.wakeLockStatus = "active";
+        state.wakeLock.addEventListener("release", () => {
+          state.wakeLock = null;
+          state.wakeLockStatus = "available";
+          render();
+        });
+      } catch (error) {
+        state.wakeLock = null;
+        state.wakeLockStatus = "blocked";
+      }
+    }
+
+    async function releaseWakeLock() {
+      if (!state.wakeLock) {
+        if ("wakeLock" in navigator && state.wakeLockStatus !== "blocked") {
+          state.wakeLockStatus = "available";
+        }
+        return;
+      }
+
+      const lock = state.wakeLock;
+      state.wakeLock = null;
+      state.wakeLockStatus = "available";
+
+      try {
+        await lock.release();
+      } catch (error) {
+        state.wakeLockStatus = "available";
+      }
+    }
+
+    function switchMode() {
+      if (state.mode === "sport") {
+        state.round += 1;
+        state.mode = "pause";
+        state.remainingSeconds = state.restSeconds;
+      } else {
+        state.mode = "sport";
+        state.remainingSeconds = state.workSeconds;
+      }
+    }
+
+    function tick() {
+      if (state.remainingSeconds > 1) {
+        state.remainingSeconds -= 1;
+      } else {
+        switchMode();
+      }
+
+      render();
+    }
+
+    async function startTimer() {
+      if (state.isRunning) {
+        return;
+      }
+
+      await requestWakeLock();
+      state.isRunning = true;
+      state.intervalId = setInterval(tick, 1000);
+      render();
+    }
+
+    async function stopTimer() {
+      if (!state.isRunning) {
+        return;
+      }
+
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      state.isRunning = false;
+      await releaseWakeLock();
+      render();
+    }
+
+    async function resetTimer() {
+      clearInterval(state.intervalId);
+      state.intervalId = null;
+      state.isRunning = false;
+      state.mode = "sport";
+      state.round = 0;
+      state.remainingSeconds = state.workSeconds;
+      await releaseWakeLock();
+      render();
+    }
+
+    function changeDuration(type, change) {
+      if (state.isRunning) {
+        return;
+      }
+
+      const key = type === "work" ? "workSeconds" : "restSeconds";
+      state[key] = Math.max(MIN_SECONDS, state[key] + change);
+
+      if ((type === "work" && state.mode === "sport") || (type === "rest" && state.mode === "pause")) {
+        state.remainingSeconds = state[key];
+      }
+
+      render();
+    }
+
+    elements.startButton.addEventListener("click", startTimer);
+    elements.stopButton.addEventListener("click", stopTimer);
+    elements.resetButton.addEventListener("click", resetTimer);
+    elements.decreaseWork.addEventListener("click", () => changeDuration("work", -STEP_SECONDS));
+    elements.increaseWork.addEventListener("click", () => changeDuration("work", STEP_SECONDS));
+    elements.decreaseRest.addEventListener("click", () => changeDuration("rest", -STEP_SECONDS));
+    elements.increaseRest.addEventListener("click", () => changeDuration("rest", STEP_SECONDS));
+
+    document.addEventListener("visibilitychange", () => {
+      if (state.isRunning && document.visibilityState === "visible") {
+        requestWakeLock();
+      }
+    });
+
+    render();
+  </script>
+</body>
+</html>
