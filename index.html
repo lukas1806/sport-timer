@@ -1,502 +1,98 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="de">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0f6b55">
+  <meta name="theme-color" content="#0d1716">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Tabata Timer">
+  <meta name="apple-mobile-web-app-title" content="Sport Timer">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>Tabata Timer</title>
+  <title>Sport Timer</title>
   <style>
-    :root {
-      color-scheme: dark;
-      --bg: #111317;
-      --panel: #1b1f27;
-      --panel-soft: #242936;
-      --text: #f7f8fb;
-      --muted: #a7afc0;
-      --border: rgba(255, 255, 255, 0.12);
-      --sport: #20c997;
-      --sport-deep: #0f6b55;
-      --pause: #4dabf7;
-      --pause-deep: #154c78;
-      --danger: #ff6b6b;
-      --shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
-    body {
-      margin: 0;
-      min-height: 100vh;
-      min-height: 100svh;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      display: grid;
-      place-items: center;
-      padding: max(18px, env(safe-area-inset-top)) max(18px, env(safe-area-inset-right)) max(18px, env(safe-area-inset-bottom)) max(18px, env(safe-area-inset-left));
-      -webkit-tap-highlight-color: transparent;
-      -webkit-text-size-adjust: 100%;
-    }
-
-    .app {
-      width: min(100%, 520px);
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .timer-display {
-      padding: 28px 22px 26px;
-      text-align: center;
-      background:
-        linear-gradient(160deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0)),
-        linear-gradient(135deg, var(--sport-deep), #17201d 62%);
-      transition: background 220ms ease;
-    }
-
-    .app.pause .timer-display {
-      background:
-        linear-gradient(160deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0)),
-        linear-gradient(135deg, var(--pause-deep), #151b24 62%);
-    }
-
-    h1 {
-      margin: 0 0 18px;
-      font-size: 1.35rem;
-      font-weight: 760;
-    }
-
-    .mode {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 112px;
-      min-height: 38px;
-      margin-bottom: 10px;
-      padding: 8px 18px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.24);
-      border: 1px solid rgba(255, 255, 255, 0.17);
-      font-size: 1rem;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0;
-    }
-
-    .time {
-      margin: 0;
-      font-variant-numeric: tabular-nums;
-      font-size: clamp(5rem, 27vw, 8.5rem);
-      line-height: 0.95;
-      font-weight: 850;
-    }
-
-    .round {
-      margin-top: 12px;
-      color: rgba(255, 255, 255, 0.82);
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .wake-status {
-      display: inline-flex;
-      align-items: center;
-      min-height: 28px;
-      margin-top: 12px;
-      padding: 5px 10px;
-      border-radius: 999px;
-      background: rgba(0, 0, 0, 0.2);
-      color: rgba(255, 255, 255, 0.74);
-      font-size: 0.82rem;
-      font-weight: 700;
-    }
-
-    .content {
-      padding: 22px;
-      display: grid;
-      gap: 18px;
-    }
-
-    .settings {
-      display: grid;
-      gap: 12px;
-    }
-
-    .setting {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      align-items: center;
-      gap: 12px;
-      min-height: 74px;
-      padding: 14px;
-      background: var(--panel-soft);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-    }
-
-    .setting-title {
-      margin: 0 0 4px;
-      font-size: 1rem;
-      font-weight: 760;
-    }
-
-    .setting-value {
-      color: var(--muted);
-      font-size: 0.95rem;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .stepper {
-      display: grid;
-      grid-template-columns: 48px 48px;
-      gap: 8px;
-    }
-
-    button {
-      border: 0;
-      -webkit-appearance: none;
-      appearance: none;
-      color: var(--text);
-      font: inherit;
-      font-weight: 800;
-      cursor: pointer;
-      touch-action: manipulation;
-      transition: transform 120ms ease, opacity 120ms ease, background 120ms ease;
-    }
-
-    button:active:not(:disabled) {
-      transform: scale(0.97);
-    }
-
-    button:disabled {
-      cursor: not-allowed;
-      opacity: 0.42;
-    }
-
-    .step-button {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: #343b4b;
-      font-size: 1.55rem;
-      line-height: 1;
-    }
-
-    .controls {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-    }
-
-    .control-button {
-      min-height: 58px;
-      border-radius: 16px;
-      font-size: 1.05rem;
-    }
-
-    .start {
-      grid-column: 1 / -1;
-      background: var(--sport);
-      color: #071512;
-    }
-
-    .app.pause .start {
-      background: var(--pause);
-      color: #06111a;
-    }
-
-    .stop {
-      background: #343b4b;
-    }
-
-    .reset {
-      background: rgba(255, 107, 107, 0.18);
-      color: #ffd6d6;
-      border: 1px solid rgba(255, 107, 107, 0.25);
-    }
-
-    @media (min-width: 560px) {
-      body {
-        padding: 32px;
-      }
-
-      .timer-display {
-        padding: 34px 30px 30px;
-      }
-
-      .content {
-        padding: 26px;
-      }
-
-      .settings {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .setting {
-        grid-template-columns: 1fr;
-      }
-
-      .stepper {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .step-button {
-        width: 100%;
-      }
-    }
+    :root { color-scheme: dark; --bg:#0d1114; --panel:#171d22; --panel2:#20292f; --text:#f6f8f7; --muted:#aab6b5; --line:rgba(255,255,255,.12); --green:#70e0b2; --greenDark:#145c4a; --blue:#83c9ff; --red:#ff8d8d; --shadow:0 24px 70px rgba(0,0,0,.36); }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; min-height:100svh; background:var(--bg); color:var(--text); font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; -webkit-tap-highlight-color:transparent; -webkit-text-size-adjust:100%; }
+    button { font:inherit; font-weight:800; border:0; cursor:pointer; touch-action:manipulation; transition:transform .12s,opacity .12s; }
+    button:active:not(:disabled) { transform:scale(.975); } button:disabled { opacity:.42; cursor:not-allowed; }
+    .app { width:min(100%,540px); min-height:100svh; margin:auto; background:var(--panel); box-shadow:var(--shadow); overflow:hidden; }
+    .top { padding:max(18px,env(safe-area-inset-top)) 20px 0; background:linear-gradient(145deg,#1a3930,#172026 68%); }
+    .brand { display:flex; justify-content:space-between; align-items:center; padding:4px 2px 18px; } .brand strong { font-size:1.2rem; letter-spacing:-.02em; } .brand span { font-size:.78rem; color:#d3e2de; font-weight:700; }
+    .tabs { display:grid; grid-template-columns:repeat(3,1fr); gap:6px; } .tab { min-height:49px; border-radius:15px 15px 0 0; background:transparent; color:#c2d0cd; } .tab.active { background:var(--panel); color:var(--green); }
+    .view { display:none; padding:22px 20px max(30px,env(safe-area-inset-bottom)); } .view.active { display:block; }
+    h1,h2,h3,p { margin-top:0; } h1 { font-size:clamp(2rem,9vw,3rem); line-height:1; letter-spacing:-.055em; margin-bottom:10px; } h2 { font-size:1.35rem; margin-bottom:6px; } .sub { color:var(--muted); margin-bottom:24px; line-height:1.45; }
+    .card { border:1px solid var(--line); background:var(--panel2); border-radius:20px; padding:18px; } .workout-card { width:100%; text-align:left; color:var(--text); display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; min-height:145px; background:linear-gradient(135deg,#1c4339,#20292f 70%); border:1px solid rgba(112,224,178,.32); border-radius:22px; padding:20px; }
+    .eyebrow { color:var(--green); font-weight:850; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; } .workout-card h2 { font-size:1.7rem; margin:6px 0; } .workout-card p { color:#c9d6d2; margin:0; font-weight:650; } .arrow { font-size:2rem; color:var(--green); }
+    .summary { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:16px; } .summary div { border-radius:14px; padding:12px 8px; text-align:center; background:#11191b; } .summary strong,.summary span { display:block; } .summary strong { font-size:1.1rem; } .summary span { color:var(--muted); font-size:.76rem; margin-top:3px; }
+    .setting { display:flex; align-items:center; justify-content:space-between; gap:15px; min-height:67px; padding:11px 0; border-bottom:1px solid var(--line); } .setting:last-child { border:0; } .setting-title { margin:0 0 3px; font-weight:800; } .setting-value { color:var(--muted); font-size:.9rem; }
+    .switch { position:relative; width:54px; height:32px; flex:0 0 auto; } .switch input { opacity:0; width:0; height:0; } .slider { position:absolute; inset:0; background:#4a555c; border-radius:99px; transition:.2s; } .slider:before { content:""; width:24px; height:24px; position:absolute; left:4px; top:4px; background:#fff; border-radius:50%; transition:.2s; } input:checked + .slider { background:var(--greenDark); } input:checked + .slider:before { transform:translateX(22px); }
+    .button { min-height:59px; border-radius:17px; padding:0 18px; } .primary { background:var(--green); color:#092118; width:100%; font-size:1.04rem; } .secondary { background:#354149; color:var(--text); } .danger { color:#ffd2d2; background:rgba(255,108,108,.14); border:1px solid rgba(255,108,108,.25); } .button-row { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:18px; } .button-row .primary { grid-column:1/-1; }
+    .back { background:transparent; color:var(--green); padding:0; margin-bottom:20px; min-height:30px; } .detail-list { padding-left:19px; color:#dbe4e1; line-height:1.55; margin:18px 0 22px; } .detail-list li+li { margin-top:6px; }
+    .timer-head { padding:0 0 18px; text-align:center; } .phase-pill { display:inline-block; padding:7px 13px; border-radius:99px; background:rgba(112,224,178,.14); color:var(--green); font-size:.78rem; font-weight:850; letter-spacing:.06em; text-transform:uppercase; } .phase-pill.rest { background:rgba(131,201,255,.13); color:var(--blue); } .round-label { color:var(--muted); font-weight:750; margin:13px 0 6px; } .exercise { font-size:clamp(1.8rem,8vw,2.7rem); margin:0; line-height:1.04; letter-spacing:-.045em; } .target { color:#c4d4cf; font-size:1.05rem; margin:10px 0 0; font-weight:700; }
+    .countdown { --progress:0; width:min(67vw,290px); aspect-ratio:1; margin:15px auto 22px; border-radius:50%; display:grid; place-items:center; background:radial-gradient(circle at center,var(--panel) 62%,transparent 63%),conic-gradient(var(--green) calc(var(--progress) * 1turn),rgba(255,255,255,.11) 0); } .countdown.rest { background:radial-gradient(circle at center,var(--panel) 62%,transparent 63%),conic-gradient(var(--blue) calc(var(--progress) * 1turn),rgba(255,255,255,.11) 0); } .time { font-size:clamp(4.8rem,23vw,7rem); font-variant-numeric:tabular-nums; line-height:.9; letter-spacing:-.08em; }
+    .progress-label { display:flex; justify-content:space-between; color:var(--muted); font-size:.82rem; font-weight:700; margin-bottom:7px; } .progress { height:9px; background:#0f1518; border-radius:99px; overflow:hidden; } .progress span { height:100%; width:0; display:block; border-radius:inherit; background:var(--green); transition:width .15s linear; }
+    .next { margin-top:18px; } .next small { color:var(--muted); display:block; margin-bottom:4px; font-weight:700; } .next strong { font-size:1.08rem; } .tip { margin:14px 0 0; color:#d8e5e1; line-height:1.4; font-size:.95rem; }.wake { text-align:center; color:var(--muted); font-size:.78rem; margin:16px 0 0; }
+    .tabata-display { text-align:center; padding:6px 0 18px; } .tabata-time,.stopwatch-time { margin:9px 0; font-size:clamp(4.4rem,22vw,7.2rem); line-height:.9; font-variant-numeric:tabular-nums; letter-spacing:-.08em; } .stopwatch-time { font-size:clamp(3.9rem,19vw,6.2rem); } .mode { display:inline-block; padding:7px 13px; border-radius:99px; font-size:.78rem; font-weight:850; letter-spacing:.07em; text-transform:uppercase; color:var(--green); background:rgba(112,224,178,.14); } .mode.pause { color:var(--blue); background:rgba(131,201,255,.13); } .round { color:var(--muted); font-weight:700; }
+    .stepper { display:grid; grid-template-columns:43px 43px; gap:8px; } .stepper button { border-radius:12px; background:#3a474f; color:var(--text); font-size:1.4rem; }
+    .completion { text-align:center; padding-top:28px; }.completion .check { display:grid; place-items:center; margin:0 auto 18px; width:78px; height:78px; border-radius:50%; background:rgba(112,224,178,.16); color:var(--green); font-size:2.4rem; }
+    @media (min-width:560px) { body { padding:24px; } .app { min-height:auto; border-radius:26px; } }
   </style>
 </head>
 <body>
-  <main class="app sport" id="app">
-    <section class="timer-display" aria-live="polite">
-      <h1>Tabata Timer</h1>
-      <div class="mode" id="modeLabel">Sport</div>
-      <p class="time" id="timeDisplay">40</p>
-      <div class="round">Runde <span id="roundDisplay">0</span></div>
-      <div class="wake-status" id="wakeStatus">Bildschirm-Wachhalten: wird geprüft</div>
+  <main class="app">
+    <header class="top"><div class="brand"><strong>Sport Timer</strong><span>Dein Training. Dein Tempo.</span></div><nav class="tabs" aria-label="Bereich wählen"><button class="tab active" data-tab="stopwatch" type="button">Stoppuhr</button><button class="tab" data-tab="tabata" type="button">Tabata</button><button class="tab" data-tab="workouts" type="button">Workout</button></nav></header>
+    <section class="view active" id="stopwatchView">
+      <div class="timer-head"><span class="phase-pill" id="stopwatchState">Bereit</span><p class="round-label">Deine Zeit</p><p class="stopwatch-time" id="stopwatchTime">00:00</p></div>
+      <div class="card"><p class="setting-title" id="stopwatchHint">Starte die Stoppuhr, wenn du bereit bist.</p><span class="setting-value">Die Zeit läuft auch bei kurzen Hintergrundwechseln korrekt weiter.</span></div>
+      <div class="button-row"><button class="button primary" id="stopwatchStart" type="button">Start</button><button class="button secondary" id="stopwatchStop" type="button">Stopp</button><button class="button danger" id="stopwatchReset" type="button">Neustart</button></div><p class="wake" id="stopwatchWake">Bildschirm-Wachhalten: wird geprüft</p>
     </section>
-
-    <section class="content">
-      <div class="settings">
-        <div class="setting">
-          <div>
-            <p class="setting-title">Sportzeit</p>
-            <div class="setting-value"><span id="workValue">40</span> Sekunden</div>
-          </div>
-          <div class="stepper" aria-label="Sportzeit einstellen">
-            <button class="step-button" id="decreaseWork" type="button" aria-label="Sportzeit verringern">−</button>
-            <button class="step-button" id="increaseWork" type="button" aria-label="Sportzeit erhöhen">+</button>
-          </div>
-        </div>
-
-        <div class="setting">
-          <div>
-            <p class="setting-title">Pausenzeit</p>
-            <div class="setting-value"><span id="restValue">20</span> Sekunden</div>
-          </div>
-          <div class="stepper" aria-label="Pausenzeit einstellen">
-            <button class="step-button" id="decreaseRest" type="button" aria-label="Pausenzeit verringern">−</button>
-            <button class="step-button" id="increaseRest" type="button" aria-label="Pausenzeit erhöhen">+</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="controls">
-        <button class="control-button start" id="startButton" type="button">Start</button>
-        <button class="control-button stop" id="stopButton" type="button">Stopp</button>
-        <button class="control-button reset" id="resetButton" type="button">Reset</button>
-      </div>
+    <section class="view" id="tabataView">
+      <div class="tabata-display"><div class="mode" id="tabataMode">Sport</div><p class="tabata-time" id="tabataTime">40</p><div class="round">Runde <span id="tabataRound">0</span></div></div>
+      <div class="card"><div class="setting"><div><p class="setting-title">Sportzeit</p><span class="setting-value"><span id="workValue">40</span> Sekunden</span></div><div class="stepper"><button id="workMinus" type="button" aria-label="Sportzeit verringern">−</button><button id="workPlus" type="button" aria-label="Sportzeit erhöhen">+</button></div></div><div class="setting"><div><p class="setting-title">Pausenzeit</p><span class="setting-value"><span id="restValue">20</span> Sekunden</span></div><div class="stepper"><button id="restMinus" type="button" aria-label="Pausenzeit verringern">−</button><button id="restPlus" type="button" aria-label="Pausenzeit erhöhen">+</button></div></div></div>
+      <div class="button-row"><button class="button primary" id="tabataStart" type="button">Start</button><button class="button secondary" id="tabataStop" type="button">Stopp</button><button class="button danger" id="tabataReset" type="button">Reset</button></div><p class="wake" id="wakeStatus">Bildschirm-Wachhalten: wird geprüft</p>
     </section>
+    <section class="view" id="workoutsView">
+      <h1>Workouts</h1><p class="sub">Wähle dein geführtes Training aus.</p>
+      <button class="workout-card" id="morningCard" type="button"><div><span class="eyebrow">Dein erstes Workout</span><h2>Morning 100</h2><p>Aufwärmen · 5 Runden · Abschluss</p><div class="summary"><div><strong>16:20</strong><span>Dauer</span></div><div><strong>5</strong><span>Runden</span></div><div><strong>400</strong><span>Wdh.</span></div></div></div><span class="arrow">›</span></button>
+    </section>
+    <section class="view" id="workoutDetailView">
+      <button class="back" id="backToWorkouts" type="button">‹ Alle Workouts</button><span class="eyebrow">Geführtes Ganzkörpertraining</span><h1>Morning 100</h1><p class="sub">Etwa 16 Minuten. Du wirst per Timer, Signalton und optionalen Ansagen durch jede Phase geführt.</p>
+      <div class="card"><div class="setting"><div><p class="setting-title">Sprachansagen</p><span class="setting-value">Nur die Namen der Übungen</span></div><label class="switch"><input id="speechToggle" type="checkbox" checked><span class="slider"></span></label></div><div class="setting"><div><p class="setting-title">Signaltöne</p><span class="setting-value">Bei Belastung und im Countdown</span></div><label class="switch"><input id="soundToggle" type="checkbox" checked><span class="slider"></span></label></div><div class="setting"><div><p class="setting-title">Lautstärke testen</p><span class="setting-value">Kurzer Signalton</span></div><button class="button secondary" id="soundTest" type="button">Test</button></div></div>
+      <ul class="detail-list"><li>2 Minuten Aufwärmen</li><li>5 Runden mit Liegestützen, Schulter-Taps, Kniebeugen, Mountain Climbers und High Knees</li><li>1 Minute entspannter Abschluss</li></ul><button class="button primary" id="workoutStart" type="button">Workout starten</button>
+    </section>
+    <section class="view" id="workoutRunView">
+      <div class="timer-head"><span class="phase-pill" id="phaseType">Aufwärmen</span><p class="round-label" id="workoutRound">Aufwärmen</p><h1 class="exercise" id="exerciseName">Marschieren</h1><p class="target" id="exerciseTarget">30 Sekunden</p></div>
+      <div class="countdown" id="countdown"><strong class="time" id="workoutTime">30</strong></div>
+      <div class="progress-label"><span>Gesamtfortschritt</span><span id="progressText">0 %</span></div><div class="progress"><span id="progressBar"></span></div>
+      <div class="card next"><small>Nächste Übung</small><strong id="nextExercise">Armkreisen vorwärts und rückwärts</strong></div>
+      <div class="button-row"><button class="button primary" id="pauseResume" type="button">Pause</button><button class="button danger" id="endWorkout" type="button">Beenden</button><button class="button secondary" id="restartWorkout" type="button">Neustart</button></div><p class="wake" id="workoutWake">Bildschirm-Wachhalten: wird geprüft</p>
+    </section>
+    <section class="view completion" id="completionView"><div class="check">✓</div><h1>Workout geschafft!</h1><p class="sub">Du hast Morning 100 in <strong id="completedTime">16:20</strong> absolviert.</p><div class="card"><div class="summary"><div><strong>50</strong><span>Liegestütze</span></div><div><strong>50</strong><span>Schulter-Taps</span></div><div><strong>100</strong><span>Kniebeugen</span></div></div><div class="summary"><div><strong>100</strong><span>Climbers</span></div><div><strong>5</strong><span>Cardio</span></div><div><strong>5</strong><span>Runden</span></div></div></div><div class="button-row"><button class="button primary" id="againWorkout" type="button">Noch einmal starten</button><button class="button secondary" id="finishWorkout" type="button">Zu den Workouts</button></div></section>
   </main>
-
   <script>
-    const MIN_SECONDS = 5;
-    const STEP_SECONDS = 5;
-    const DEFAULT_WORK_SECONDS = 40;
-    const DEFAULT_REST_SECONDS = 20;
-
-    const state = {
-      workSeconds: DEFAULT_WORK_SECONDS,
-      restSeconds: DEFAULT_REST_SECONDS,
-      remainingSeconds: DEFAULT_WORK_SECONDS,
-      mode: "sport",
-      round: 0,
-      isRunning: false,
-      intervalId: null,
-      wakeLock: null,
-      wakeLockStatus: "checking"
-    };
-
-    const elements = {
-      app: document.getElementById("app"),
-      modeLabel: document.getElementById("modeLabel"),
-      timeDisplay: document.getElementById("timeDisplay"),
-      roundDisplay: document.getElementById("roundDisplay"),
-      wakeStatus: document.getElementById("wakeStatus"),
-      workValue: document.getElementById("workValue"),
-      restValue: document.getElementById("restValue"),
-      decreaseWork: document.getElementById("decreaseWork"),
-      increaseWork: document.getElementById("increaseWork"),
-      decreaseRest: document.getElementById("decreaseRest"),
-      increaseRest: document.getElementById("increaseRest"),
-      startButton: document.getElementById("startButton"),
-      stopButton: document.getElementById("stopButton"),
-      resetButton: document.getElementById("resetButton")
-    };
-
-    function render() {
-      elements.app.classList.toggle("sport", state.mode === "sport");
-      elements.app.classList.toggle("pause", state.mode === "pause");
-      elements.modeLabel.textContent = state.mode === "sport" ? "Sport" : "Pause";
-      elements.timeDisplay.textContent = state.remainingSeconds;
-      elements.roundDisplay.textContent = state.round;
-      elements.workValue.textContent = state.workSeconds;
-      elements.restValue.textContent = state.restSeconds;
-      elements.wakeStatus.textContent = getWakeLockText();
-
-      const settingsDisabled = state.isRunning;
-      elements.decreaseWork.disabled = settingsDisabled || state.workSeconds <= MIN_SECONDS;
-      elements.increaseWork.disabled = settingsDisabled;
-      elements.decreaseRest.disabled = settingsDisabled || state.restSeconds <= MIN_SECONDS;
-      elements.increaseRest.disabled = settingsDisabled;
-      elements.startButton.disabled = state.isRunning;
-      elements.stopButton.disabled = !state.isRunning;
-    }
-
-    function getWakeLockText() {
-      if (!("wakeLock" in navigator)) {
-        return "Bildschirm-Wachhalten: nicht verfügbar";
-      }
-
-      if (state.wakeLock) {
-        return "Bildschirm-Wachhalten: aktiv";
-      }
-
-      if (state.wakeLockStatus === "blocked") {
-        return "Bildschirm-Wachhalten: blockiert";
-      }
-
-      if (state.isRunning) {
-        return "Bildschirm-Wachhalten: nicht aktiv";
-      }
-
-      return "Bildschirm-Wachhalten: verfügbar";
-    }
-
-    async function requestWakeLock() {
-      if (!("wakeLock" in navigator) || state.wakeLock) {
-        if (!("wakeLock" in navigator)) {
-          state.wakeLockStatus = "unsupported";
-        }
-        return;
-      }
-
-      try {
-        state.wakeLock = await navigator.wakeLock.request("screen");
-        state.wakeLockStatus = "active";
-        state.wakeLock.addEventListener("release", () => {
-          state.wakeLock = null;
-          state.wakeLockStatus = "available";
-          render();
-        });
-      } catch (error) {
-        state.wakeLock = null;
-        state.wakeLockStatus = "blocked";
-      }
-    }
-
-    async function releaseWakeLock() {
-      if (!state.wakeLock) {
-        if ("wakeLock" in navigator && state.wakeLockStatus !== "blocked") {
-          state.wakeLockStatus = "available";
-        }
-        return;
-      }
-
-      const lock = state.wakeLock;
-      state.wakeLock = null;
-      state.wakeLockStatus = "available";
-
-      try {
-        await lock.release();
-      } catch (error) {
-        state.wakeLockStatus = "available";
-      }
-    }
-
-    function switchMode() {
-      if (state.mode === "sport") {
-        state.round += 1;
-        state.mode = "pause";
-        state.remainingSeconds = state.restSeconds;
-      } else {
-        state.mode = "sport";
-        state.remainingSeconds = state.workSeconds;
-      }
-    }
-
-    function tick() {
-      if (state.remainingSeconds > 1) {
-        state.remainingSeconds -= 1;
-      } else {
-        switchMode();
-      }
-
-      render();
-    }
-
-    async function startTimer() {
-      if (state.isRunning) {
-        return;
-      }
-
-      await requestWakeLock();
-      state.isRunning = true;
-      state.intervalId = setInterval(tick, 1000);
-      render();
-    }
-
-    async function stopTimer() {
-      if (!state.isRunning) {
-        return;
-      }
-
-      clearInterval(state.intervalId);
-      state.intervalId = null;
-      state.isRunning = false;
-      await releaseWakeLock();
-      render();
-    }
-
-    async function resetTimer() {
-      clearInterval(state.intervalId);
-      state.intervalId = null;
-      state.isRunning = false;
-      state.mode = "sport";
-      state.round = 0;
-      state.remainingSeconds = state.workSeconds;
-      await releaseWakeLock();
-      render();
-    }
-
-    function changeDuration(type, change) {
-      if (state.isRunning) {
-        return;
-      }
-
-      const key = type === "work" ? "workSeconds" : "restSeconds";
-      state[key] = Math.max(MIN_SECONDS, state[key] + change);
-
-      if ((type === "work" && state.mode === "sport") || (type === "rest" && state.mode === "pause")) {
-        state.remainingSeconds = state[key];
-      }
-
-      render();
-    }
-
-    elements.startButton.addEventListener("click", startTimer);
-    elements.stopButton.addEventListener("click", stopTimer);
-    elements.resetButton.addEventListener("click", resetTimer);
-    elements.decreaseWork.addEventListener("click", () => changeDuration("work", -STEP_SECONDS));
-    elements.increaseWork.addEventListener("click", () => changeDuration("work", STEP_SECONDS));
-    elements.decreaseRest.addEventListener("click", () => changeDuration("rest", -STEP_SECONDS));
-    elements.increaseRest.addEventListener("click", () => changeDuration("rest", STEP_SECONDS));
-
-    document.addEventListener("visibilitychange", () => {
-      if (state.isRunning && document.visibilityState === "visible") {
-        requestWakeLock();
-      }
-    });
-
-    render();
+    const $ = (id) => document.getElementById(id);
+    const save = (key, value) => localStorage.setItem(key, JSON.stringify(value));
+    const load = (key, fallback) => { try { const value = localStorage.getItem(key); return value === null ? fallback : JSON.parse(value); } catch { return fallback; } };
+    const tips = { "Erhöhte Liegestütze":"Körper stabil halten und kontrolliert absenken.", "Schulter-Taps":"Hüfte möglichst ruhig halten.", "Kniebeugen":"Knie folgen der Richtung deiner Fußspitzen.", "Mountain Climbers":"Bauch anspannen und Schultern über den Händen halten.", "High Knees":"Knie aktiv anheben und Arme mitnehmen." };
+    const phase = (name, seconds, type, options={}) => ({ name, seconds, type, ...options });
+    const workout = [
+      phase("Marschieren auf der Stelle",30,"warm",{tip:"Komm entspannt in Bewegung."}), phase("Armkreisen vorwärts und rückwärts",30,"warm",{tip:"Große, lockere Kreise aus den Schultern."}), phase("Leichte Kniebeugen",30,"warm",{tip:"Kontrolliert absenken und wieder aufrichten."}), phase("Wechselnde Kniehebungen",30,"warm",{tip:"Nimm die Arme aktiv mit."}),
+      ...[1,2,3,4,5].flatMap(round => [phase("Erhöhte Liegestütze",25,"work",{round,reps:10}), phase("Wechselzeit",5,"transition",{round}), phase("Schulter-Taps",20,"work",{round,reps:10}), phase("Wechselzeit",5,"transition",{round}), phase("Kniebeugen",30,"work",{round,reps:20}), phase("Wechselzeit",5,"transition",{round}), phase("Mountain Climbers",20,"work",{round,reps:20}), phase("Wechselzeit",5,"transition",{round}), phase("High Knees",20,"work",{round}), phase("Pause",25,"rest",{round})]),
+      phase("Langsames Gehen auf der Stelle",20,"cooldown",{tip:"Werde langsam ruhiger."}), phase("Arme und Schultern lockern",20,"cooldown",{tip:"Lass Spannung bewusst los."}), phase("Ruhig ein- und ausatmen",20,"cooldown",{tip:"Atme tief und entspannt."})
+    ];
+    const TOTAL = workout.reduce((sum, item) => sum + item.seconds, 0);
+    let audioContext, wakeLock = null;
+    const settings = { speech:load("morning100-speech",true), sound:load("morning100-sound",true) };
+    $("speechToggle").checked=settings.speech; $("soundToggle").checked=settings.sound;
+    $("speechToggle").addEventListener("change",e=>{settings.speech=e.target.checked;save("morning100-speech",settings.speech)}); $("soundToggle").addEventListener("change",e=>{settings.sound=e.target.checked;save("morning100-sound",settings.sound)});
+    function unlockAudio(){ if (!audioContext || audioContext.state === "closed") audioContext = new (window.AudioContext || window.webkitAudioContext)(); if (audioContext.state !== "running") audioContext.resume().catch(()=>{}); }
+    function beep(high=false){ if(!settings.sound) return; unlockAudio(); const osc=audioContext.createOscillator(), gain=audioContext.createGain(); osc.frequency.value=high?880:580; gain.gain.setValueAtTime(.001,audioContext.currentTime); gain.gain.exponentialRampToValueAtTime(.12,audioContext.currentTime+.015); gain.gain.exponentialRampToValueAtTime(.001,audioContext.currentTime+.22); osc.connect(gain).connect(audioContext.destination); osc.start(); osc.stop(audioContext.currentTime+.23); }
+    function say(text){ if(!settings.speech || !("speechSynthesis" in window)) return; speechSynthesis.cancel(); const utterance=new SpeechSynthesisUtterance(text); utterance.lang="de-DE"; utterance.rate=1.04; speechSynthesis.speak(utterance); }
+    async function requestWake(){ if(!("wakeLock" in navigator)||wakeLock)return; try{wakeLock=await navigator.wakeLock.request("screen");wakeLock.addEventListener("release",()=>{wakeLock=null;renderWake()});}catch{} renderWake(); } async function releaseWake(){if(wakeLock){const active=wakeLock;wakeLock=null;try{await active.release()}catch{}}renderWake();} function renderWake(){const text=wakeLock?"Bildschirm-Wachhalten: aktiv":("wakeLock" in navigator?"Bildschirm-Wachhalten: verfügbar":"Bildschirm-Wachhalten: nicht verfügbar");$("wakeStatus").textContent=text;$("workoutWake").textContent=text;$("stopwatchWake").textContent=text;}
+    const tabs = document.querySelectorAll(".tab"), views=document.querySelectorAll(".view"); function show(view){views.forEach(v=>v.classList.toggle("active",v.id===view)); const tabName=view==="stopwatchView"?"stopwatch":view.startsWith("tabata")?"tabata":"workouts";tabs.forEach(t=>t.classList.toggle("active",t.dataset.tab===tabName)); window.scrollTo(0,0);} tabs.forEach(tab=>tab.addEventListener("click",()=>show(tab.dataset.tab==="stopwatch"?"stopwatchView":tab.dataset.tab==="tabata"?"tabataView":"workoutsView")));
+    const stopwatch={elapsed:0,running:false,startedAt:0,timer:null}; function stopwatchSeconds(){return stopwatch.elapsed+(stopwatch.running?(Date.now()-stopwatch.startedAt)/1000:0);} function formatStopwatch(seconds){const wholeSeconds=Math.floor(seconds), minutes=Math.floor(wholeSeconds/60), remaining=wholeSeconds%60;return String(minutes).padStart(2,"0")+":"+String(remaining).padStart(2,"0");} function renderStopwatch(){const running=stopwatch.running, elapsed=stopwatchSeconds();$("stopwatchTime").textContent=formatStopwatch(elapsed);$("stopwatchState").textContent=running?"Läuft":elapsed>0?"Pausiert":"Bereit";$("stopwatchState").classList.toggle("rest",!running&&elapsed>0);$("stopwatchHint").textContent=running?"Die Stoppuhr läuft.":elapsed>0?"Die Zeit ist angehalten.":"Starte die Stoppuhr, wenn du bereit bist.";$("stopwatchStart").textContent=elapsed>0?"Fortsetzen":"Start";$("stopwatchStart").disabled=running;$("stopwatchStop").disabled=!running;} async function startStopwatch(){if(stopwatch.running)return;stopwatch.startedAt=Date.now();stopwatch.running=true;await requestWake();stopwatch.timer=setInterval(renderStopwatch,150);renderStopwatch();} async function stopStopwatch(){if(!stopwatch.running)return;stopwatch.elapsed=stopwatchSeconds();clearInterval(stopwatch.timer);stopwatch.running=false;await releaseWake();renderStopwatch();} async function resetStopwatch(){clearInterval(stopwatch.timer);Object.assign(stopwatch,{elapsed:0,running:false,startedAt:0,timer:null});await releaseWake();renderStopwatch();} $("stopwatchStart").onclick=startStopwatch;$("stopwatchStop").onclick=stopStopwatch;$("stopwatchReset").onclick=resetStopwatch;
+    const tabata={work:40,rest:20,left:40,mode:"work",round:0,running:false,ends:0,timer:null}; function renderTabata(){const paused=tabata.mode==="rest";$("tabataMode").textContent=paused?"Pause":"Sport";$("tabataMode").classList.toggle("pause",paused);$("tabataTime").textContent=Math.ceil(tabata.left);$("tabataRound").textContent=tabata.round;$("workValue").textContent=tabata.work;$("restValue").textContent=tabata.rest;["workMinus","workPlus","restMinus","restPlus"].forEach(id=>$(id).disabled=tabata.running);$("tabataStart").disabled=tabata.running;$("tabataStop").disabled=!tabata.running;} function tickTabata(){tabata.left=Math.max(0,(tabata.ends-Date.now())/1000);if(!tabata.left){if(tabata.mode==="work"){tabata.round++;tabata.mode="rest";tabata.left=tabata.rest}else{tabata.mode="work";tabata.left=tabata.work}tabata.ends=Date.now()+tabata.left*1000;}renderTabata();} async function startTabata(){unlockAudio();tabata.running=true;tabata.ends=Date.now()+tabata.left*1000;await requestWake();tabata.timer=setInterval(tickTabata,150);renderTabata();} async function stopTabata(){tabata.left=Math.max(0,(tabata.ends-Date.now())/1000);clearInterval(tabata.timer);tabata.running=false;await releaseWake();renderTabata();} async function resetTabata(){clearInterval(tabata.timer);Object.assign(tabata,{left:tabata.work,mode:"work",round:0,running:false});await releaseWake();renderTabata();} $("tabataStart").onclick=startTabata;$("tabataStop").onclick=stopTabata;$("tabataReset").onclick=resetTabata; [["workMinus","work",-5],["workPlus","work",5],["restMinus","rest",-5],["restPlus","rest",5]].forEach(([id,key,delta])=>$(id).onclick=()=>{if(tabata.running)return;tabata[key]=Math.max(5,tabata[key]+delta);if((key==="work"&&tabata.mode==="work")||(key==="rest"&&tabata.mode==="rest"))tabata.left=tabata[key];renderTabata();});
+    const run={index:0,left:workout[0].seconds,running:false,paused:false,ends:0,timer:null,lastSecond:null,elapsed:0,midpointPlayed:false,countdownTones:new Set()}; function labelFor(p){return p.type==="rest"?"Pause":p.type==="transition"?"Wechsel":p.type==="warm"?"Aufwärmen":p.type==="cooldown"?"Abschluss":"Belastung";} function isExercise(p){return ["warm","work","cooldown"].includes(p.type);} function announcement(p){return isExercise(p)?p.name:"";} function nextRealExercise(){return workout.slice(run.index+1).find(isExercise);} function renderRun(){const p=workout[run.index], next=nextRealExercise();const fraction=Math.max(0,Math.min(1,run.left/p.seconds));$("phaseType").textContent=labelFor(p);$("phaseType").classList.toggle("rest",p.type==="rest"||p.type==="transition");$("workoutRound").textContent=p.round?"Runde "+p.round+" von 5":labelFor(p);$("exerciseName").textContent=p.name;$("exerciseTarget").textContent=p.reps?p.reps+" Wiederholungen · "+p.seconds+" Sekunden":p.seconds+" Sekunden";$("workoutTime").textContent=Math.ceil(run.left);$("countdown").style.setProperty("--progress",fraction);$("countdown").classList.toggle("rest",p.type==="rest"||p.type==="transition");const done=Math.min(TOTAL,run.elapsed+(p.seconds-run.left));const percentage=Math.round(done/TOTAL*100);$("progressBar").style.width=percentage+"%";$("progressText").textContent=percentage+" %";$("nextExercise").textContent=next?next.name:"Geschafft!";$("pauseResume").textContent=run.running?"Pause":"Fortsetzen";} function enterPhase(){const p=workout[run.index];run.left=p.seconds;run.ends=Date.now()+p.seconds*1000;run.lastSecond=Math.ceil(p.seconds);run.midpointPlayed=false;run.countdownTones=new Set();if(p.type!=="transition")beep(p.round===3&&p.name==="Erhöhte Liegestütze");const message=announcement(p);if(message)say(message);renderRun();} function finish(){clearInterval(run.timer);run.running=false;releaseWake();$("completedTime").textContent=formatTime(TOTAL);show("completionView");} function tickRun(){const p=workout[run.index];run.left=Math.max(0,(run.ends-Date.now())/1000);if(isExercise(p)&&!run.midpointPlayed&&run.left<=p.seconds/2){run.midpointPlayed=true;beep();}if(isExercise(p)){[3,2,1].forEach(second=>{if(run.left<=second&&!run.countdownTones.has(second)){run.countdownTones.add(second);beep(second===1);}});}run.lastSecond=Math.ceil(run.left);if(run.left<=0){run.elapsed+=p.seconds;run.index++;if(run.index>=workout.length){finish();return;}enterPhase();}renderRun();} async function startWorkout(){unlockAudio();clearInterval(run.timer);Object.assign(run,{index:0,elapsed:0,running:true,paused:false});show("workoutRunView");await requestWake();enterPhase();run.timer=setInterval(tickRun,150);} async function pauseResume(){if(run.running){run.left=Math.max(0,(run.ends-Date.now())/1000);clearInterval(run.timer);run.running=false;run.paused=true;speechSynthesis.cancel();await releaseWake();renderRun();return;}unlockAudio();run.running=true;run.ends=Date.now()+run.left*1000;await requestWake();run.timer=setInterval(tickRun,150);renderRun();} async function endWorkout(){clearInterval(run.timer);run.running=false;speechSynthesis.cancel();await releaseWake();show("workoutsView");} $("morningCard").onclick=()=>show("workoutDetailView");$("backToWorkouts").onclick=()=>show("workoutsView");$("workoutStart").onclick=startWorkout;$("pauseResume").onclick=pauseResume;$("endWorkout").onclick=endWorkout;$("restartWorkout").onclick=startWorkout;$("againWorkout").onclick=startWorkout;$("finishWorkout").onclick=()=>show("workoutsView");$("soundTest").onclick=()=>{unlockAudio();beep(true);}; function formatTime(seconds){return Math.floor(seconds/60)+":"+String(seconds%60).padStart(2,"0");} document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"&&(stopwatch.running||tabata.running||run.running))requestWake();}); renderStopwatch();renderTabata();renderWake();
   </script>
 </body>
 </html>
