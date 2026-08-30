@@ -45,3 +45,13 @@ Das Workout **300** ist absichtlich kein geführtes Phasen-Workout: Es misst die
 - Ein persönlicher Rekord wird lokal nur für eine vollständige, schnellere Absolvierung angeboten. Die App muss die Person anschließend ausdrücklich entscheiden lassen, ob diese Zeit gespeichert werden soll. Ein vorzeitig über „Fertig“ beendetes Workout darf den Rekord nicht ändern.
 - For-Time-Workouts haben keine Ansagen, Halbzeit- oder 3-2-1-Töne. Die Audio-Regeln oben gelten ausschließlich für phasenbasierte, geführte Workouts.
 - Bei neuen For-Time-Workouts soll dieselbe Steuerungslogik wiederverwendet werden, statt sie zu duplizieren.
+
+## AMRAP-Workouts
+
+Das Workout **AMRAP 24 + 12 Kettlebell** läuft 20 Minuten rückwärts und zählt manuell absolvierte Runden. Die Übungsreihenfolge lautet: 6 Kettlebell Swings, 6 Squats, 6 Kettlebell Overhead Presses, 6 Push-Ups und 12 Lunges. Die fünf lokalen weißen Illustrationen bleiben während des gesamten Workouts sichtbar.
+
+- Es nutzt dieselben Pause/Fortsetzen-, Neustart- und Rundenzähler-Prinzipien wie 300, läuft aber bis zum Ablauf der festen Zeit weiter.
+- **+1** und **−** dürfen nur während eines laufenden Workouts den Rundenstand ändern; es gibt kein Rundenlimit.
+- Der anfängliche persönliche Rekord beträgt 13 Runden und liegt im Local Storage unter `amrap-24-plus-12-kettlebell-record`.
+- Ein neuer Rekord darf nur bei einer höheren Rundenzahl angeboten und erst nach ausdrücklicher Bestätigung gespeichert werden. Das gilt auch bei einem manuellen Abschluss über **Fertig**.
+- AMRAP-Workouts lösen keine Sprachansagen, Halbzeit- oder 3-2-1-Töne aus.

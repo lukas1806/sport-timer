@@ -6,7 +6,7 @@ Mobile, statische Trainings-App für GitHub Pages – ohne Build-Prozess und ohn
 
 - **Stoppuhr:** frei laufende Stoppuhr mit Start, Stopp, Fortsetzen und Neustart.
 - **Tabata:** frei einstellbarer Sport-/Pausen-Timer mit Start, Stopp und Reset.
-- **Workout:** Auswahl geführter Workouts. Enthalten sind **Morning 100** (16:20 Minuten), **300** (rundenbasiert) sowie die **Chinesische Morgenroutine** (8 Minuten).
+- **Workout:** Auswahl geführter Workouts. Enthalten sind **Morning 100** (16:20 Minuten), **300** (rundenbasiert), **Chinesische Morgenroutine** (8 Minuten) sowie **AMRAP 24 + 12 Kettlebell** (20 Minuten).
 - **Steuerung:** Pause/Fortsetzen hält die Restzeit an; Beenden kehrt zur Workout-Auswahl zurück; Neustart beginnt das Workout bei 0.
 - **Darstellung:** aktuelle Übung, Runde, Countdown, Gesamtfortschritt und die *nächste echte Übung*. Wechselzeiten und Pausen werden in der Vorschau bewusst übersprungen.
 - **Gerätefunktionen:** Sprachansagen und Signaltöne können ein-/ausgeschaltet werden und werden im Local Storage gespeichert. Wake Lock hält den Bildschirm – falls vom Browser unterstützt – während des Trainings wach.
@@ -27,6 +27,15 @@ Das Workout 300 besteht aus zehn Runden mit jeweils 10 Liegestützen, 10 Squats 
 ## Chinesische Morgenroutine
 
 Die chinesische Morgenroutine besteht aus acht direkt aufeinanderfolgenden Ein-Minuten-Übungen: Lymphatic Hops, Body Waves, Alternate Arm Swings, Trunk Twists, Chest Opener, Golf Swings, Marches with Knee Slaps und Body Taps. Es gibt keine Übergangs- oder Pausenphase. Die mitgelieferte Übungen-Übersicht liegt als lokales, für den dunklen Hintergrund hell dargestelltes Bild unter `assets/chinese-morning-routine.png`.
+
+## AMRAP 24 + 12 Kettlebell
+
+Dieses Workout läuft 20 Minuten rückwärts. Pro Runde werden 6 Kettlebell Swings, 6 Squats, 6 Kettlebell Overhead Presses, 6 Push-Ups und 12 Lunges erledigt; danach beginnt die Reihenfolge wieder von vorn. Die fünf Übungskacheln bleiben während des Trainings sichtbar.
+
+- **+1** und **−** zählen abgeschlossene Runden während der laufenden Zeit und korrigieren Fehlklicks.
+- Nach Ablauf der 20 Minuten oder über **Fertig** erscheint die absolvierte Rundenzahl.
+- Der anfängliche Rekord beträgt 13 Runden. Nur bei mehr Runden wird angeboten, den Rekord nach ausdrücklicher Bestätigung lokal zu speichern.
+- Das AMRAP ist rundenbasiert und löst keine Sprach- oder Countdown-Signale aus.
 
 ## Feste Regeln für geführte Workouts
 
@@ -61,7 +70,7 @@ Verwende dabei diese Typen:
 
 Für ein neues geführtes Workout eine eigene Phasen-Konfiguration anlegen und sie beim Start als aktives `workout` setzen. Die generischen Funktionen für `isExercise`, `nextRealExercise`, `enterPhase` und `tickRun` dürfen dabei nicht durch workout-spezifische Sonderlogik ersetzt werden: Sie sorgen dafür, dass die Regeln aus der Tabelle für alle Workouts einheitlich angewendet werden.
 
-Bei rundenbasierten For-Time-Workouts wie 300 ist dagegen eine separate, Zeit- und Rundenzähler-basierte Ansicht sinnvoll. Diese dürfen keine der geführten Audio-Regeln auslösen. Speichere Rekorde nur, wenn die Zielanzahl an Runden wirklich erreicht wurde.
+Bei rundenbasierten Workouts wie **300** (For Time) oder **AMRAP 24 + 12 Kettlebell** ist dagegen eine separate, Zeit- und Rundenzähler-basierte Ansicht sinnvoll. Diese dürfen keine der geführten Audio-Regeln auslösen. For-Time-Rekorde werden nur bei erreichter Zielrundenzahl angeboten; AMRAP-Rekorde nur bei einer höheren Rundenzahl und stets erst nach ausdrücklicher Bestätigung gespeichert.
 
 Für jedes neue Workout außerdem:
 
