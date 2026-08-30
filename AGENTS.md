@@ -63,3 +63,7 @@ Die App enthält direkt eingebettete YouTube-Workouts. Sie werden nicht als Date
 - Die Konfiguration liegt als `videoWorkouts` in `index.html`; jedes Video benötigt Titel, kurze Beschreibung und YouTube-Video-ID.
 - Der Player verwendet `https://www.youtube-nocookie.com/embed/VIDEO_ID?rel=0` und wird erst beim Öffnen des Workouts gesetzt. Beim Zurückkehren zur Workout-Auswahl muss die Quelle wieder auf `about:blank` gesetzt werden, damit das Video stoppt.
 - Der Fallback-Button führt zum Originalvideo auf YouTube. Video-Workouts haben keine Timer-, Audio- oder Rundenlogik.
+
+## Detailansichten
+
+Auf allen Workout-Detailansichten steht oben ausschließlich die Schaltfläche **„Zurück“**. Zusätzliche Kategoriezeilen direkt unter dieser Schaltfläche werden nicht angezeigt.
