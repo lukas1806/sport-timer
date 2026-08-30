@@ -8,7 +8,7 @@ Mobile, statische Trainings-App für GitHub Pages – ohne Build-Prozess und ohn
 - **Tabata:** frei einstellbarer Sport-/Pausen-Timer mit Start, Stopp und Reset.
 - **Workout:** Auswahl geführter Workouts. Enthalten sind **Morning 100** (16:20 Minuten), **300** (rundenbasiert), **Chinesische Morgenroutine** (8 Minuten) sowie **AMRAP 24 + 12 Kettlebell** (20 Minuten).
 - **Video-Workouts:** Zwei häufig genutzte YouTube-Workouts sind direkt aus der Workout-Auswahl erreichbar: „Bewegung aktivieren“ und „Intensives Bauchtraining“.
-- **Steuerung:** Pause/Fortsetzen hält die Restzeit an; Beenden kehrt zur Workout-Auswahl zurück; Neustart beginnt das Workout bei 0.
+- **Steuerung:** Pause/Fortsetzen hält die Restzeit an; Beenden kehrt zur Workout-Auswahl zurück; Neustart beginnt das Workout bei 0. Bei einem laufenden Timer zeigt die Kopfzeile eine Leiste zum direkten Zurückkehren.
 - **Darstellung:** aktuelle Übung, Runde, Countdown, Gesamtfortschritt und die *nächste echte Übung*. Wechselzeiten und Pausen werden in der Vorschau bewusst übersprungen.
 - **Gerätefunktionen:** Sprachansagen und Signaltöne können ein-/ausgeschaltet werden und werden im Local Storage gespeichert. Wake Lock hält den Bildschirm – falls vom Browser unterstützt – während des Trainings wach.
 
@@ -37,6 +37,8 @@ Das Workout 300 besteht aus zehn Runden mit jeweils 10 Liegestützen, 10 Squats 
 ## Chinesische Morgenroutine
 
 Die chinesische Morgenroutine besteht aus acht direkt aufeinanderfolgenden Ein-Minuten-Übungen: Lymphatic Hops, Body Waves, Alternate Arm Swings, Trunk Twists, Chest Opener, Golf Swings, Marches with Knee Slaps und Body Taps. Es gibt keine Übergangs- oder Pausenphase. Die mitgelieferte Übungen-Übersicht liegt als lokales, für den dunklen Hintergrund hell dargestelltes Bild unter `assets/chinese-morning-routine.png`.
+
+Die Abschlussansicht und **„Noch einmal starten“** beziehen sich immer auf das zuletzt absolvierte geführte Workout.
 
 ## AMRAP 24 + 12 Kettlebell
 

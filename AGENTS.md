@@ -8,6 +8,7 @@ Dieses Repository enthält eine statische mobile Workout-App in `index.html`. Es
 - Workout-Steuerung: **Pause** hält an, **Fortsetzen** läuft mit der korrekten Restzeit weiter, **Beenden** führt zur Workout-Auswahl zurück, **Neustart** beginnt bei 0.
 - Der Timer muss weiterhin aus Zeitstempeln (`Date.now()`) berechnet werden, damit Hintergrundwechsel keine Zeit verfälschen.
 - Die Karte „Nächste Übung“ darf nur Phasen mit `warm`, `work` oder `cooldown` nennen, niemals `transition` oder `rest`.
+- Bei einem laufenden Timer zeigt die Kopfzeile die Leiste „Aktiv“. Sie führt zur aktiven Timeransicht zurück und darf nicht entfernt werden.
 
 ## Einheitliche Audio-Regeln für jedes Workout
 
@@ -35,6 +36,8 @@ Jede Phase wird über `phase(name, seconds, type, options)` definiert. Erlaubte 
 Für neue Workouts immer Kachel, Detailansicht, Phasenkonfiguration, Gesamtdauer und Abschlusswerte ergänzen. Danach lokal testen: Reihenfolge, echte Restzeit nach Pause, Neustart, Beenden, Halbzeitton, 3-2-1-Töne und „Nächste Übung“-Vorschau.
 
 Die **Chinesische Morgenroutine** nutzt dieselbe geführte Timerlogik wie Morning 100, allerdings mit acht Phasen des Typs `work` à 60 Sekunden und ohne `transition` oder `rest`. Das Workout-Bild liegt unter `assets/chinese-morning-routine.png` und wird per CSS hell auf dem dunklen App-Hintergrund dargestellt.
+
+Die gemeinsame Abschlussansicht wird über die Konfiguration des aktuell aktiven geführten Workouts befüllt. „Noch einmal starten“ muss immer genau dieses Workout erneut starten; für die chinesische Morgenroutine dürfen keine Morning-100-Werte angezeigt werden.
 
 ## Rundenbasierte For-Time-Workouts
 
