@@ -7,11 +7,21 @@ Mobile, statische Trainings-App für GitHub Pages – ohne Build-Prozess und ohn
 - **Stoppuhr:** frei laufende Stoppuhr mit Start, Stopp, Fortsetzen und Neustart.
 - **Tabata:** frei einstellbarer Sport-/Pausen-Timer mit Start, Stopp und Reset.
 - **Workout:** Auswahl geführter Workouts. Enthalten sind **Morning 100** (16:20 Minuten), **300** (rundenbasiert), **Chinesische Morgenroutine** (8 Minuten) sowie **AMRAP 24 + 12 Kettlebell** (20 Minuten).
+- **Video-Workouts:** Zwei häufig genutzte YouTube-Workouts sind direkt aus der Workout-Auswahl erreichbar: „Bewegung aktivieren“ und „Intensives Bauchtraining“.
 - **Steuerung:** Pause/Fortsetzen hält die Restzeit an; Beenden kehrt zur Workout-Auswahl zurück; Neustart beginnt das Workout bei 0.
 - **Darstellung:** aktuelle Übung, Runde, Countdown, Gesamtfortschritt und die *nächste echte Übung*. Wechselzeiten und Pausen werden in der Vorschau bewusst übersprungen.
 - **Gerätefunktionen:** Sprachansagen und Signaltöne können ein-/ausgeschaltet werden und werden im Local Storage gespeichert. Wake Lock hält den Bildschirm – falls vom Browser unterstützt – während des Trainings wach.
 
 Die Restzeit wird aus echten Zeitstempeln berechnet, nicht durch bloßes Herunterzählen. Dadurch bleibt der Timer nach einem kurzen Wechsel in den Hintergrund korrekt.
+
+## Video-Workouts
+
+Video-Workouts werden nicht lokal gespeichert oder heruntergeladen. Die App lädt den offiziellen YouTube-Player erst beim Öffnen der jeweiligen Workout-Kachel über `youtube-nocookie.com` und benötigt daher eine Internetverbindung. Wenn die Einbettung einmal nicht verfügbar ist, führt der Button **„In YouTube öffnen“** direkt zum Originalvideo.
+
+Aktuell enthalten:
+
+- Bewegung aktivieren – [LeoMoves](https://www.youtube.com/watch?v=MlvVRDGNGeo)
+- Intensives Bauchtraining – [Mady Morrison](https://www.youtube.com/watch?v=7P4-W0D21fg)
 
 ## Workout „300“
 

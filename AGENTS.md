@@ -55,3 +55,11 @@ Das Workout **AMRAP 24 + 12 Kettlebell** läuft 20 Minuten rückwärts und zähl
 - Der anfängliche persönliche Rekord beträgt 13 Runden und liegt im Local Storage unter `amrap-24-plus-12-kettlebell-record`.
 - Ein neuer Rekord darf nur bei einer höheren Rundenzahl angeboten und erst nach ausdrücklicher Bestätigung gespeichert werden. Das gilt auch bei einem manuellen Abschluss über **Fertig**.
 - AMRAP-Workouts lösen keine Sprachansagen, Halbzeit- oder 3-2-1-Töne aus.
+
+## Video-Workouts
+
+Die App enthält direkt eingebettete YouTube-Workouts. Sie werden nicht als Dateien heruntergeladen oder im Repository gespeichert.
+
+- Die Konfiguration liegt als `videoWorkouts` in `index.html`; jedes Video benötigt Titel, kurze Beschreibung und YouTube-Video-ID.
+- Der Player verwendet `https://www.youtube-nocookie.com/embed/VIDEO_ID?rel=0` und wird erst beim Öffnen des Workouts gesetzt. Beim Zurückkehren zur Workout-Auswahl muss die Quelle wieder auf `about:blank` gesetzt werden, damit das Video stoppt.
+- Der Fallback-Button führt zum Originalvideo auf YouTube. Video-Workouts haben keine Timer-, Audio- oder Rundenlogik.
