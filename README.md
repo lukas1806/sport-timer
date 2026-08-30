@@ -6,12 +6,27 @@ Mobile, statische Trainings-App für GitHub Pages – ohne Build-Prozess und ohn
 
 - **Stoppuhr:** frei laufende Stoppuhr mit Start, Stopp, Fortsetzen und Neustart.
 - **Tabata:** frei einstellbarer Sport-/Pausen-Timer mit Start, Stopp und Reset.
-- **Workout:** Auswahl geführter Workouts. Das erste Workout ist **Morning 100** (16:20 Minuten): vier Aufwärmübungen, fünf Runden und drei Abschlussübungen.
+- **Workout:** Auswahl geführter Workouts. Enthalten sind **Morning 100** (16:20 Minuten), **300** (rundenbasiert) sowie die **Chinesische Morgenroutine** (8 Minuten).
 - **Steuerung:** Pause/Fortsetzen hält die Restzeit an; Beenden kehrt zur Workout-Auswahl zurück; Neustart beginnt das Workout bei 0.
 - **Darstellung:** aktuelle Übung, Runde, Countdown, Gesamtfortschritt und die *nächste echte Übung*. Wechselzeiten und Pausen werden in der Vorschau bewusst übersprungen.
 - **Gerätefunktionen:** Sprachansagen und Signaltöne können ein-/ausgeschaltet werden und werden im Local Storage gespeichert. Wake Lock hält den Bildschirm – falls vom Browser unterstützt – während des Trainings wach.
 
 Die Restzeit wird aus echten Zeitstempeln berechnet, nicht durch bloßes Herunterzählen. Dadurch bleibt der Timer nach einem kurzen Wechsel in den Hintergrund korrekt.
+
+## Workout „300“
+
+Das Workout 300 besteht aus zehn Runden mit jeweils 10 Liegestützen, 10 Squats und 10 Sit-Ups. Es misst die Zeit bis zum Abschluss; es gibt keine vorgegebenen Übungszeiten und keine Audiohinweise.
+
+- Der große Button **„+1 Runde geschafft“** zählt die aktuelle Runde hoch.
+- Mit **−** kann eine versehentlich gezählte Runde während des laufenden Workouts wieder abgezogen werden.
+- Nach der zehnten Runde wird das Workout automatisch beendet.
+- **Fertig** beendet ein Workout vorzeitig; eine solche Zeit wird nicht als Rekord gewertet.
+- Der persönliche Rekord wird im Local Storage gespeichert. Der anfängliche Rekord beträgt 9:23. Nach einer vollständigen, schnelleren Zeit fragt die App ausdrücklich, ob sie als neuer Rekord gespeichert werden soll.
+- Die drei lokalen Übungsillustrationen liegen unter `assets/`.
+
+## Chinesische Morgenroutine
+
+Die chinesische Morgenroutine besteht aus acht direkt aufeinanderfolgenden Ein-Minuten-Übungen: Lymphatic Hops, Body Waves, Alternate Arm Swings, Trunk Twists, Chest Opener, Golf Swings, Marches with Knee Slaps und Body Taps. Es gibt keine Übergangs- oder Pausenphase. Die mitgelieferte Übungen-Übersicht liegt als lokales, für den dunklen Hintergrund hell dargestelltes Bild unter `assets/chinese-morning-routine.png`.
 
 ## Feste Regeln für geführte Workouts
 
@@ -30,7 +45,7 @@ Als „echte Übung“ gelten die Phasentypen `warm`, `work` und `cooldown`. Die
 
 ## Weiteres Workout hinzufügen
 
-Die Workout-Phasen stehen im JavaScript-Block in `index.html` im Array `workout`. Eine Phase wird mit dem Helfer `phase(...)` beschrieben:
+Die Phasen für Morning 100 und die chinesische Morgenroutine stehen im JavaScript-Block in `index.html`. Für den Ablauf wird die jeweils ausgewählte Konfiguration als aktives Array `workout` gesetzt. Eine Phase wird mit dem Helfer `phase(...)` beschrieben:
 
 ```js
 phase("Name der Übung", 30, "work", { round: 1, reps: 12 })
@@ -44,7 +59,9 @@ Verwende dabei diese Typen:
 - `rest` für Pausen
 - `cooldown` für Abschlussübungen
 
-Für ein vollständig neues, auswählbares Workout muss die Anwendung von der einzelnen Variablen `workout` auf eine Workout-Liste mit einer aktiven Auswahl erweitert werden. Dabei dürfen die generischen Funktionen für `isExercise`, `nextRealExercise`, `enterPhase` und `tickRun` nicht durch workout-spezifische Sonderlogik ersetzt werden: Sie sorgen dafür, dass die Regeln aus der Tabelle für alle Workouts einheitlich angewendet werden.
+Für ein neues geführtes Workout eine eigene Phasen-Konfiguration anlegen und sie beim Start als aktives `workout` setzen. Die generischen Funktionen für `isExercise`, `nextRealExercise`, `enterPhase` und `tickRun` dürfen dabei nicht durch workout-spezifische Sonderlogik ersetzt werden: Sie sorgen dafür, dass die Regeln aus der Tabelle für alle Workouts einheitlich angewendet werden.
+
+Bei rundenbasierten For-Time-Workouts wie 300 ist dagegen eine separate, Zeit- und Rundenzähler-basierte Ansicht sinnvoll. Diese dürfen keine der geführten Audio-Regeln auslösen. Speichere Rekorde nur, wenn die Zielanzahl an Runden wirklich erreicht wurde.
 
 Für jedes neue Workout außerdem:
 

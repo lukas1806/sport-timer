@@ -22,7 +22,7 @@ Die Funktionen `isExercise`, `enterPhase` und `tickRun` implementieren diese Reg
 
 ## Neue Workouts ergänzen
 
-Die aktuelle Konfiguration `workout` ist ein einzelnes Array im JavaScript von `index.html`. Wenn ein zweites auswählbares Workout ergänzt wird, diese Konfiguration in eine Liste von Workout-Objekten überführen und das gewählte Objekt als aktives Workout verwenden. Die Ablauf- und Audio-Logik darf dabei nicht dupliziert werden.
+`workout` ist das zur Laufzeit aktive Phasen-Array im JavaScript von `index.html`. Neue geführte Workouts erhalten eine eigene Konfiguration; beim Start wird diese als aktives `workout` gesetzt. Die Ablauf- und Audio-Logik darf dabei nicht dupliziert werden.
 
 Jede Phase wird über `phase(name, seconds, type, options)` definiert. Erlaubte Typen:
 
@@ -33,3 +33,15 @@ Jede Phase wird über `phase(name, seconds, type, options)` definiert. Erlaubte 
 - `cooldown`: Abschlussübung
 
 Für neue Workouts immer Kachel, Detailansicht, Phasenkonfiguration, Gesamtdauer und Abschlusswerte ergänzen. Danach lokal testen: Reihenfolge, echte Restzeit nach Pause, Neustart, Beenden, Halbzeitton, 3-2-1-Töne und „Nächste Übung“-Vorschau.
+
+Die **Chinesische Morgenroutine** nutzt dieselbe geführte Timerlogik wie Morning 100, allerdings mit acht Phasen des Typs `work` à 60 Sekunden und ohne `transition` oder `rest`. Das Workout-Bild liegt unter `assets/chinese-morning-routine.png` und wird per CSS hell auf dem dunklen App-Hintergrund dargestellt.
+
+## Rundenbasierte For-Time-Workouts
+
+Das Workout **300** ist absichtlich kein geführtes Phasen-Workout: Es misst die Zeit bis zu einer vorgegebenen Rundenzahl. Es besteht aus 10 Runden mit 10 Liegestützen, 10 Squats und 10 Sit-Ups pro Runde.
+
+- Es verwendet eine Zeitstempel-Stoppuhr sowie einen manuellen Runden-Zähler mit **+1** und **−**.
+- Nach der letzten Zielrunde muss es automatisch enden.
+- Ein persönlicher Rekord wird lokal nur für eine vollständige, schnellere Absolvierung angeboten. Die App muss die Person anschließend ausdrücklich entscheiden lassen, ob diese Zeit gespeichert werden soll. Ein vorzeitig über „Fertig“ beendetes Workout darf den Rekord nicht ändern.
+- For-Time-Workouts haben keine Ansagen, Halbzeit- oder 3-2-1-Töne. Die Audio-Regeln oben gelten ausschließlich für phasenbasierte, geführte Workouts.
+- Bei neuen For-Time-Workouts soll dieselbe Steuerungslogik wiederverwendet werden, statt sie zu duplizieren.
